@@ -1,0 +1,47 @@
+rule all:
+    input:
+        "results/deseq2_results.csv",
+        "results/go_enrichment.csv",
+        "results/gsea_results.csv",
+        "results/wgcna_modules.csv"
+
+rule deseq2:
+    input:
+        "data/expression_matrix.csv",
+        "config/sample_metadata.csv"
+    output:
+        "results/deseq2_results.csv"
+    conda:
+        "envs/deseq2.yaml"
+    shell:
+        "Rscript workflow/scripts/run_deseq2.R {input} {output}"
+
+rule go_enrichment:
+    input:
+        "results/deseq2_results.csv"
+    output:
+        "results/go_enrichment.csv"
+    conda:
+        "envs/go_enrichment.yaml"
+    shell:
+        "Rscript workflow/scripts/run_go_enrichment.R {input} {output}"
+
+rule gsea:
+    input:
+        "results/deseq2_results.csv"
+    output:
+        "results/gsea_results.csv"
+    conda:
+        "envs/gsea.yaml"
+    shell:
+        "Rscript workflow/scripts/run_gsea.R {input} {output}"
+
+rule wgcna:
+    input:
+        "data/expression_matrix.csv"
+    output:
+        "results/wgcna_modules.csv"
+    conda:
+        "envs/wgcna.yaml"
+    shell:
+        "Rscript workflow/scripts/run_wgcna.R {input} {output}"
