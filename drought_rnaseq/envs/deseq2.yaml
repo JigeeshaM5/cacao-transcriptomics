@@ -1,0 +1,11 @@
+name: deseq2_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base=4.2
+  - bioconductor-deseq2
+  - r-tidyverse
+  - r-readr
+  - r-optparse
