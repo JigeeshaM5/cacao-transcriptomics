@@ -1,0 +1,11 @@
+name: go_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base=4.2
+  - bioconductor-clusterprofiler
+  - bioconductor-org.At.tair.db  # Replace with cacao annotation
+  - r-readr
+  - r-dplyr
