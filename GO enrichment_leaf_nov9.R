@@ -1,4 +1,5 @@
-# First, let's combine all DESeq2 results into one dataframe
+#GO enrichment for lead (code can be restructured for apex and root in cacao analysis)
+
 library(tidyverse)
 
 # Function to convert DESeq results to dataframe with timepoint info
@@ -372,3 +373,4 @@ summary_stats <- tibble(
 )
 
 print(summary_stats)
+
