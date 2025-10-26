@@ -21,7 +21,7 @@ library(ComplexHeatmap)
 library(circlize)
 
 #data path
-expr_data_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/For R/counts.tsv"
+expr_data_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/counts.tsv"
 #-------------------------------------------------------------------------------
 
 df <- read.table("counts.tsv", header = TRUE, sep = "\t")
@@ -588,3 +588,4 @@ final_plot_apex <- combined_plot_apex +
 
 # Display the final plot
 final_plot_apex
+
