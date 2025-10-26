@@ -8,7 +8,7 @@ library(clusterProfiler)
 library(ggplot2)
 library(igraph)  
 # Load the expression matrix (contains Cacao ID, Arabidopsis ID, gene names, and expression values)
-expr_data <- read_excel("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/for R/Cacao_Embryo_GeneExpression.xlsx")# Create matrix of expression values only
+expr_data <- read_excel("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/Cacao_Embryo_GeneExpression.xlsx")# Create matrix of expression values only
 data_matrix <- expr_data[, 4:ncol(expr_data)] |> as.matrix()
 rownames(data_matrix) <- expr_data$`Name/Description`
 
@@ -615,3 +615,4 @@ hc_res <- hclust(dist_matrix, method = "ward.D2")
 
 # Plot dendrogram
 plot(hc_res, main = "Hierarchical Clustering of Expression Data")
+
