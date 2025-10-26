@@ -1,3 +1,5 @@
+#Cacao analysis alternate pipeline October 2024 (taking example of cacao root)
+
 library(ggplot2)
 library(dplyr)
 library(DESeq2)
@@ -63,19 +65,19 @@ grid.draw(venn.plot_down)
 # Load required library
 library(VennDiagram)
 
-# Example gene sets for DOWN-regulated genes at different times (replace with actual lists)
+# Gene sets for DOWN-regulated genes at different times 
 drought_5am_down <- paste0("Gene", 1:651)
 drought_9am_down <- paste0("Gene", 1:24)
 drought_24hpt_down <- "Gene1"
 
-# Create a Venn diagram for DOWN-regulated genes with better aesthetics
+# Create a Venn diagram for DOWN-regulated genes 
 venn.plot_down <- venn.diagram(
   x = list(
     `5 AM` = drought_5am_down,
     `9 AM` = drought_9am_down,
     `24 h PT` = drought_24hpt_down
   ),
-  filename = NULL,  # We want to display it in R, not save it as a file
+  filename = NULL,  
   category.names = c("5 AM", "9 AM", "24 h PT"),
   fill = c("turquoise", "lightpink", "lightgreen"),  # Softer color palette
   alpha = 0.7,  # Set transparency
@@ -107,7 +109,7 @@ upset_data <- data.frame(
 library(UpSetR)
 
 # Total number of genes
-total_genes <- 1300  # Update this if your total gene count is different
+total_genes <- 1300  
 
 # Create a data frame with the correct number of genes
 upset_data <- data.frame(
@@ -160,11 +162,11 @@ venn.plot <- venn.diagram(
 grid.draw(venn.plot)
 
 
-# Load necessary library
+# Load library
 library(UpSetR)
 
 # Total number of genes
-total_genes <- 2000  # Adjust based on the sum of UP and DOWN gene counts provided for all time points
+total_genes <- 2000  
 
 # Create a data frame with the correct number of genes for UP and DOWN categories at different time points
 upset_data <- data.frame(
@@ -375,6 +377,7 @@ ggplot(long_data, aes(x = Time, y = Count, fill = Regulation)) +
   scale_fill_manual(values = c("UP" = "turquoise", "DOWN" = "lightpink")) +
   theme(text = element_text(size = 12),
         axis.text.x = element_text(angle = 45, hjust = 1))
+
 
 
 
