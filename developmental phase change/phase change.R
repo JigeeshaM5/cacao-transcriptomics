@@ -1,3 +1,5 @@
+# Code under work for this project as of October 2025
+
 install.packages("igraph")  # Install if missing
 if (!requireNamespace("BiocManager", quietly=TRUE))
   install.packages("BiocManager")
@@ -17,14 +19,14 @@ library(igraph)
 
 
 
-#path to your file
+
 # Define file path
-raw_phase <- read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/for R/deseq2_OTA_vs_PTA.csv")
+raw_phase <- read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/deseq2_OTA_vs_PTA.csv")
 
 #read other files
 
-expr_data_early<-read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/deseq2_OTA_early_vs_PTA_early.csv")
-expr_data_late<-read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/deseq2_OTA_late_vs_PTA_late.csv")
+expr_data_early<-read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/deseq2_OTA_early_vs_PTA_early.csv")
+expr_data_late<-read.csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/deseq2_OTA_late_vs_PTA_late.csv")
 
 library(ggplot2)
 library(matrixStats)
@@ -66,7 +68,7 @@ filtered_by_pvalue <- subset(raw_phase,
 # Save to Excel
 library(writexl)
 write_xlsx(filtered_by_pvalue,
-           "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/for R/filtered_rawP.xlsx")
+           "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/filtered_rawP.xlsx")
 
 # Step 4: Save the filtered data as an Excel file
 # First, load the writexl package (you may need to install it)
@@ -108,15 +110,6 @@ ggplot(raw_phase, aes(x = log2FoldChange, y = negLog10P, color = Significance)) 
   theme(legend.position = "top")
 
 
-
-#ends here july 25----------------------------------
-
-# Step 3: Filter out genes with log2FC == 0
-filtered_phase <- raw_phase[raw_phase$log2FoldChange != 0, ]
-
-# Step 4: Compute composite score
-filtered_phase$score <- -log10(filtered_phase$PAdj + 1e-10) * abs(filtered_phase$log2FoldChange)
-
 # Step 5: Rank and select top 298 genes
 ranked_phase <- filtered_phase[!is.na(filtered_phase$score), ]
 top298_genes <- ranked_phase[order(ranked_phase$score, decreasing = TRUE)[1:298], ]
@@ -134,47 +127,7 @@ upregulated   <- top298_sorted[top298_sorted$log2FoldChange > 0, ]
 downregulated <- top298_sorted[top298_sorted$log2FoldChange < 0, ]
 
 # Step 8: Save to Excel with two sheets
-output_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_DEGs_up_down.xlsx"
-
-write_xlsx(
-  list(
-    Upregulated = upregulated,
-    Downregulated = downregulated
-  ),
-  path = output_path
-)
-
-#now repeat for early
-# Step 2: Convert necessary columns to numeric
-expr_data_early$log2FoldChange <- as.numeric(as.character(expr_data_early$log2FoldChange))
-expr_data_early$PAdj           <- as.numeric(as.character(expr_data_early$PAdj))
-expr_data_early$FDR            <- as.numeric(as.character(expr_data_early$FDR))
-expr_data_early$baseMean       <- as.numeric(as.character(expr_data_early$baseMean))
-
-# Step 3: Filter out genes with log2FC == 0
-filtered_phase_early <- expr_data_early[expr_data_early$log2FoldChange != 0, ]
-
-# Step 4: Compute composite score
-filtered_phase_early$score <- -log10(filtered_phase_early$PAdj + 1e-10) * abs(filtered_phase_early$log2FoldChange)
-
-# Step 5: Rank and select top 224 genes
-ranked_phase_early <- filtered_phase_early[!is.na(filtered_phase_early$score), ]
-top224_genes_early <- ranked_phase_early[order(ranked_phase_early$score, decreasing = TRUE)[1:224], ]
-
-# Step 6: Sort by |log2FC|, then PAdj, FDR, baseMean
-top224_sorted_early <- top224_genes_early[
-  order(-abs(top224_genes_early$log2FoldChange),
-        top224_genes_early$PAdj,
-        top224_genes_early$FDR,
-        -top224_genes_early$baseMean),
-]
-
-# Step 7: Split into upregulated and downregulated
-upregulated   <- top224_sorted_early[top224_sorted_early$log2FoldChange > 0, ]
-downregulated <- top224_sorted_early[top224_sorted_early$log2FoldChange < 0, ]
-
-# Step 8: Save to Excel with two sheets
-output_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_early_DEGs_up_down.xlsx"
+output_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/top_DEGs_up_down.xlsx"
 
 write_xlsx(
   list(
@@ -185,54 +138,14 @@ write_xlsx(
 )
 
 
-#now repeat for late
-# Step 2: Convert necessary columns to numeric
-expr_data_late$log2FoldChange <- as.numeric(as.character(expr_data_late$log2FoldChange))
-expr_data_late$PAdj           <- as.numeric(as.character(expr_data_late$PAdj))
-expr_data_late$FDR            <- as.numeric(as.character(expr_data_late$FDR))
-expr_data_late$baseMean       <- as.numeric(as.character(expr_data_late$baseMean))
 
-# Step 3: Filter out genes with log2FC == 0
-filtered_phase_late <- expr_data_late[expr_data_late$log2FoldChange != 0, ]
 
-# Step 4: Compute composite score
-filtered_phase_late$score <- -log10(filtered_phase_late$PAdj + 1e-10) * abs(filtered_phase_late$log2FoldChange)
 
-# Step 5: Rank and select top 186 genes
-ranked_phase_late <- filtered_phase_late[!is.na(filtered_phase_late$score), ]
-top186_genes_late <- ranked_phase_late[order(ranked_phase_late$score, decreasing = TRUE)[1:186], ]
 
-# Step 6: Sort by |log2FC|, then PAdj, FDR, baseMean
-top186_sorted_late <- top186_genes_late[
-  order(-abs(top186_genes_late$log2FoldChange),
-        top186_genes_late$PAdj,
-        top186_genes_late$FDR,
-        -top186_genes_late$baseMean),
-]
 
-# Step 7: Split into upregulated and downregulated
-upregulated   <- top186_sorted_late[top186_sorted_late$log2FoldChange > 0, ]
-downregulated <- top186_sorted_late[top186_sorted_late$log2FoldChange < 0, ]
 
-# Step 8: Save to Excel with two sheets
-output_path <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_late_DEGs_up_down.xlsx"
 
-write_xlsx(
-  list(
-    Upregulated = upregulated,
-    Downregulated = downregulated
-  ),
-  path = output_path
-)
-
-#-------------------------ignore filtering below
-
-# Ensure relevant columns are numeric
-raw_phase$log2FoldChange <- as.numeric(as.character(raw_phase$log2FoldChange))
-raw_phase$FDR            <- as.numeric(as.character(raw_phase$FDR))
-# Make sure PAdj is numeric
-raw_phase$log2FoldChange <- as.numeric(as.character(raw_phase$log2FoldChange))
-raw_phase$PAdj <- as.numeric(as.character(raw_phase$PAdj))
+ 
 
 
 # OR use raw_phase$PAdj if you prefer adjusted p-values
@@ -254,7 +167,7 @@ filtered_PAdj <- raw_phase[
 ]
 
 
-#continue on july 23 to create heatmaps and volcano plots
+#continued on july 23 to create heatmaps and volcano plots
 
 library(tidyverse)
 
@@ -298,7 +211,7 @@ library(writexl)
 
 # 1. Load your 298-gene table
 top298 <- read_xlsx(
-  "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_DEGs_up_down.xlsx")
+  "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/top_DEGs_up_down.xlsx")
 
 # 2. Clean & rank
 top298 <- top298 %>%
@@ -379,7 +292,7 @@ rownames(expr_mat) <- row_labels
 expr_scaled <- t(scale(t(expr_mat)))
 
 
-#— Step 7: Draw Heatmap —#
+#Draw Heatmap —#
 library(pheatmap)
 
 # Define sample annotations
@@ -453,106 +366,9 @@ Heatmap(
 )
 
 
-#volcano plots
-library(ggplot2)
-library(dplyr)
+# PCA analysis
 
-#stop july 23 at 3.45 pm
-
-# Assuming your dataframe is already ranked and cleaned as `top298`
-
-# Volcano plot
-
-top298 <- top298 %>%
-  filter(!is.na(PAdj), is.finite(PAdj), !is.na(log2FoldChange), is.finite(log2FoldChange))
-
-ggplot(top298, aes(x = log2FoldChange, y = -log10(PAdj))) +
-  geom_point(alpha = 0.6, size = 2.2, color = "#3b528b") +
-  scale_x_continuous(limits = c(-4, 4)) +  # expand axis to make room
-  scale_y_continuous(limits = c(0, 10)) +  # stretch vertical to see dispersion
-  labs(
-    title = "Volcano Plot: OTA vs PTA",
-    x = "log₂(Fold Change)",
-    y = "−log₁₀(Adjusted p-value)"
-  ) +
-  theme_minimal(base_size = 15)
-
-summary(top298$log2FoldChange)
-summary(-log10(top298$PAdj))
-
-#--------------ignore filtering above
-
-
-
-# Install and load the writexl package
-install.packages("writexl")
-library(writexl)
-
-# Define the output file path
-phase_file_filtered <- "C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/filtered_DEGs_OTA_vs_PTA.xlsx"
-
-# Save the filtered data frame to Excel
-write_xlsx(filtered_genes, phase_file_filtered)
-
-hist(as.numeric(raw_phase$log2FoldChange), breaks = 100,
-     main = "Distribution of Log2 Fold Changes",
-     xlab = "log2(FC)", col = "steelblue")
-abline(v = c(-1.5, 1.5), col = "red", lwd = 2, lty = 2)
-
-hist(as.numeric(raw_phase$FDR), breaks = 100,
-     main = "Distribution of FDR values",
-     xlab = "FDR", col = "forestgreen")
-abline(v = 0.1, col = "red", lwd = 2, lty = 2)
-
-plot(as.numeric(raw_phase$baseMean),
-     as.numeric(raw_phase$log2FoldChange),
-     log = "x", pch = 20, col = "gray",
-     xlab = "BaseMean (log scale)", ylab = "log2FoldChange",
-     main = "Expression vs Fold Change")
-abline(h = c(-1.5, 1.5), col = "red", lwd = 2, lty = 2)
-
-plot(log2(as.numeric(raw_phase$baseMean + 1)),
-     as.numeric(raw_phase$log2FoldChange),
-     pch = 20, col = "gray",
-     xlab = "log2(baseMean + 1)", ylab = "log2FoldChange",
-     main = "MA-style Plot")
-
-# 1. Identify sample columns
-sampleCols <- grep("^(OTA|PTA)_.*_R[1-4]$", colnames(raw_phase), value = TRUE)
-
-# 2. Force-convert sample columns to numeric
-raw_phase[sampleCols] <- lapply(raw_phase[sampleCols], function(x) as.numeric(as.character(x)))
-
-# 3. Build expression matrix
-expr_matrix <- as.matrix(raw_phase[, sampleCols])
-stopifnot(is.numeric(expr_matrix))
-
-# 4. Sample metadata
-colData_phase <- data.frame(
-  condition = factor(ifelse(grepl("^OTA", sampleCols), "OTA", "PTA")),
-  replicate = factor(sub("^.*_R", "", sampleCols)),
-  row.names = sampleCols
-)
-
-# 5. Filter top variable genes
-geneVars <- rowVars(expr_matrix)
-topN <- 500
-topGenes <- order(geneVars, decreasing = TRUE)[1:topN]
-filtered_matrix <- expr_matrix[topGenes, ]
-
-# 6. PCA
-pca_res <- prcomp(t(filtered_matrix), center = TRUE, scale. = TRUE)
-varExp <- pca_res$sdev^2 / sum(pca_res$sdev^2)
-
-# 7. Scree plot
-barplot(
-  varExp[1:10] * 100,
-  names.arg = paste0("PC", 1:10),
-  ylab = "% Variance",
-  main = paste("Scree Plot (Top", topN, "Genes)")
-)
-
-# 8. PC1 vs PC2 plot
+# PC1 vs PC2 plot
 pc_df <- data.frame(
   sample    = rownames(pca_res$x),
   PC1       = pca_res$x[, 1],
@@ -572,7 +388,7 @@ ggplot(pc_df, aes(PC1, PC2, color = condition, label = sample)) +
 
 library(ggplot2)
 
-# Assuming 'pc_df' is your PCA result data frame
+
 ggplot(pc_df, aes(x = PC1, y = PC2, color = condition, label = sample)) +
   geom_point(size = 4, alpha = 0.8) +
   geom_text(vjust = -0.8, hjust = 0.5, size = 3, check_overlap = TRUE) +
@@ -592,14 +408,14 @@ ggplot(pc_df, aes(x = PC1, y = PC2, color = condition, label = sample)) +
     panel.grid.major = element_line(color = "grey90")
   )
 
-# 9. Extract PCA loadings (rotation matrix)
+# Extract PCA loadings (rotation matrix)
 loadings <- pca_res$rotation  # dimensions: genes × PCs
 
-# 10. Top 20 genes contributing to PC1
+# Top 20 genes contributing to PC1
 top_PC1_genes <- sort(abs(loadings[, 1]), decreasing = TRUE)[1:20]
 top_PC1_names <- names(top_PC1_genes)
 
-# 11. Top 20 genes contributing to PC2
+# Top 20 genes contributing to PC2
 top_PC2_genes <- sort(abs(loadings[, 2]), decreasing = TRUE)[1:20]
 top_PC2_names <- names(top_PC2_genes)
 # 12. Map gene IDs to gene symbols (if available)
@@ -661,8 +477,8 @@ pheatmap(
 library(openxlsx)
 
 # Load both sheets
-deg_up <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_early_DEGs_up_down.xlsx", sheet = 1)
-deg_down <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_early_DEGs_up_down.xlsx", sheet = 2)
+deg_up <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/top_early_DEGs_up_down.xlsx", sheet = 1)
+deg_down <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/top_early_DEGs_up_down.xlsx", sheet = 2)
 
 # Combine
 deg_all <- rbind(deg_up, deg_down)
@@ -752,165 +568,8 @@ pheatmap(expr_top_scaled,
 )
 write.xlsx(top_genes, file = "Top_50_DEGs_early.xlsx", sheetName = "TopGenes_early", rowNames = FALSE)
 
-#try volcano
-deg_up <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_early_DEGs_up_down.xlsx", sheet = 1)
-deg_down <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_early_DEGs_up_down.xlsx", sheet = 2)
 
-# Combine
-deg_all <- rbind(deg_up, deg_down)
-library(ggplot2)
-library(ggrepel)
-library(dplyr)
-
-
-
-# Volcano plot: No FDR threshold
-ggplot(deg_all, aes(x = log2FoldChange, y = -log10(FDR), label = gene)) +
-  geom_point(aes(color = case_when(
-    log2FoldChange > 0.1 ~ "Upregulated",
-    log2FoldChange < -0.1 ~ "Downregulated",
-    TRUE ~ "Neutral"
-  )), size = 2) +
-  
-  geom_text_repel(aes(label = ifelse(abs(log2FoldChange) > 0.1, gene, "")),
-                  size = 3, max.overlaps = 30) +
-  
-  scale_color_manual(values = c(
-    "Upregulated" = "firebrick",
-    "Downregulated" = "royalblue",
-    "Neutral" = "gray"
-  )) +
-  
-  theme_minimal(base_size = 14) +
-  labs(x = "Log2 Fold Change",
-       y = "-log10(FDR)",
-       color = "Expression") +
-  
-  geom_vline(xintercept = c(-0.5, 0.5), linetype = "dashed")
-
-
-
-
-#starting with late DEGs on July 25 2025
-library(openxlsx)
-
-# Load both sheets
-deg_up_late <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_late_DEGs_up_down.xlsx", sheet = 1)
-deg_down_late <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_late_DEGs_up_down.xlsx", sheet = 2)
-
-# Combine
-deg_all_late <- rbind(deg_up_late, deg_down_late)
-library(EnhancedVolcano)
-library(ggplot2)
-library(ggrepel)
-
-
-# Clean up just in case
-deg_all_late$log2FoldChange <- as.numeric(deg_all_late$log2FoldChange)
-deg_all_late$PValue <- as.numeric(deg_all_late$PValue)
-
-
-
-top_genes_late <- deg_all_late[order(abs(deg_all_late$log2FoldChange), decreasing = TRUE), ][1:50, ]
-
-ggplot(deg_all_late, aes(x = log2FoldChange, y = -log10(PValue))) +
-  geom_point(alpha = 0.5, size = 1.5, color = "gray60") +
-  geom_point(data = top_genes, aes(x = log2FoldChange, y = -log10(PValue)), color = "firebrick", size = 3) +
-  geom_text_repel(data = top_genes_late, aes(label = gene), size = 3, max.overlaps = Inf) +
-  theme_classic() +
-  labs(title = "Volcano Plot: Late Top 50 DEGs",
-       x = "Log2 Fold Change", y = "-log10(P-value)")+ geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "gray70") +
-  geom_hline(yintercept = -log10(0.05), linetype = "dotted", color = "gray70")
-
-
-
-
-
-
-
-
-
-# Sort and extract top 50 by absolute log2FC
-library(pheatmap)
-
-# 🟣 Step 1: Select top 50 DEGs based on absolute log2 fold change
-top_genes_late <- deg_all_late[order(abs(deg_all_late$log2FoldChange), decreasing = TRUE), ][1:50, ]
-
-# 🟢 Step 2: Get sample expression columns (with 'Late_' prefix)
-sample_cols <- grep("Late_", names(deg_all_late))
-
-# 🔵 Step 3: Build full expression matrix and normalize (Z-score)
-expr_matrix <- as.matrix(deg_all_late[, sample_cols])
-rownames(expr_matrix) <- deg_all_late$gene
-expr_scaled <- t(scale(t(expr_matrix)))
-
-# 🔶 Step 4: Heatmap for all DEGs (optional overview)
-pheatmap(expr_scaled,
-         cluster_rows = TRUE,
-         cluster_cols = TRUE,
-         color = colorRampPalette(c("blue", "white", "red"))(100),
-         fontsize_row = 6,
-         fontsize_col = 8,
-         show_rownames = FALSE,
-         main = "Heatmap of All DEGs in Late Cacao Phase Change"
-)
-
-# 🔺 Step 5: Subset expression matrix for top 50 DEGs only
-top_heat_late <- deg_all_late[match(top_genes_late$gene, deg_all_late$gene), ]
-expr_top_late <- as.matrix(top_heat_late[, sample_cols])
-rownames(expr_top_late) <- top_heat_late$gene
-
-# 🔻 Step 6: Normalize and plot targeted heatmap
-expr_top_late_scaled <- t(scale(t(expr_top_late)))
-
-pheatmap(expr_top_late_scaled,
-         cluster_rows = TRUE,
-         cluster_cols = TRUE,
-         color = colorRampPalette(c("green", "black", "magenta"))(100),
-         fontsize_row = 7,
-         show_rownames = TRUE,
-         main = "Top 50 Late DEGs - Expression Heatmap"
-)
-write.xlsx(top_genes_late, file = "Top_50_DEGs_late.xlsx", sheetName = "TopGenes_late", rowNames = FALSE)
-
-#try volcano
-deg_up_late <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_late_DEGs_up_down.xlsx", sheet = 1)
-deg_down_late <- read.xlsx("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/top_late_DEGs_up_down.xlsx", sheet = 2)
-
-# Combine
-deg_all_late <- rbind(deg_up_late, deg_down_late)
-library(ggplot2)
-library(ggrepel)
-library(dplyr)
-
-
-
-# Volcano plot: No FDR threshold
-ggplot(deg_all_late, aes(x = log2FoldChange, y = -log10(FDR), label = gene)) +
-  geom_point(aes(color = case_when(
-    log2FoldChange > 0.1 ~ "Upregulated",
-    log2FoldChange < -0.1 ~ "Downregulated",
-    TRUE ~ "Neutral"
-  )), size = 2) +
-  
-  geom_text_repel(aes(label = ifelse(abs(log2FoldChange) > 0.1, gene, "")),
-                  size = 3, max.overlaps = 30) +
-  
-  scale_color_manual(values = c(
-    "Upregulated" = "firebrick",
-    "Downregulated" = "royalblue",
-    "Neutral" = "gray"
-  )) +
-  
-  theme_minimal(base_size = 14) +
-  labs(x = "Log2 Fold Change",
-       y = "-log10(FDR)",
-       color = "Expression") +
-  
-  geom_vline(xintercept = c(-0.5, 0.5), linetype = "dashed")
-
-
-#try GO July 25
+# GO  enrichment July 25
 library(clusterProfiler)
 library(readr)
 library(dplyr)
@@ -924,8 +583,8 @@ library(dplyr)
 library(stringr)
 library(tidyr)
 
-# 🟡 STEP 1: Load and clean GO annotation file
-go_map <- read_csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/for R/Theobroma_cacao_SCA-6_chr.v1.0.summary.csv",
+# STEP 1: Load and clean GO annotation file
+go_map <- read_csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2025/Theobroma_cacao_SCA-6_chr.v1.0.summary.csv",
                    na = c("", "NA", "---NA---")) |>
   select(go_id = "GO IDs", gene_id = "SeqName") |>
   drop_na(go_id) |>
@@ -939,7 +598,7 @@ go_map <- read_csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job a
     go_id = str_trim(go_id)
   )
 
-# 🟢 STEP 2: Define your upregulated DEG vector manually
+# STEP 2: Define your upregulated DEG vector manually
 up_genes <- c(
   "SCA-6_Chr3v1_09040", "SCA-6_Chr3v1_08468", "SCA-6_Chr6v1_18722", "SCA-6_Chr1v1_01001",
   "SCA-6_Chr1v1_00531", "SCA-6_Chr1v1_01604", "SCA-6_Chr1v1_00398", "SCA-6_Chr1v1_00536",
@@ -965,579 +624,21 @@ up_genes <- c(
   "SCA-6_Chr1v1_00734", "SCA-6_Chr1v1_00147"
 )
 
-# 🔵 STEP 3: Run GO enrichment
+# STEP 3: Run GO enrichment
 go_results_up <- enricher(
   gene = up_genes,
   TERM2GENE = go_map,
   pvalueCutoff = 0.1
 )
 
-# 🔴 STEP 4: Visualize
+# STEP 4: Visualize
 dotplot(go_results_up, showCategory = 100) +
   ggtitle("GO Enrichment of Upregulated Late DEGs")
 library(ggplot2)
 
-#for down degs late
+# repeat for down degs late
 
-library(clusterProfiler)
-library(readr)
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(ggplot2)
 
-# 🟡 STEP 1: Load and clean GO annotation
-go_map <- read_csv("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/for R/Theobroma_cacao_SCA-6_chr.v1.0.summary.csv",
-                   na = c("", "NA", "---NA---")) |>
-  select(go_id = "GO IDs", gene_id = "SeqName") |>
-  drop_na(go_id) |>
-  mutate(
-    gene_id = str_remove(gene_id, "\\.1$"),
-    go_id   = str_trim(go_id)
-  ) |>
-  separate_rows(go_id, sep = "; ") |>
-  mutate(
-    go_id = str_replace(go_id, "^[A-Z]:", ""),   # Remove P:, F:, C: prefixes
-    gene_id = str_trim(gene_id),
-    go_id   = str_trim(go_id)
-  )
 
-
-
-# 🧬 STEP 2: Manually define downregulated DEGs
-down_genes <- c(
-  "SCA-6_Chr9v1_24462", "SCA-6_Chr2v1_05915", "SCA-6_Chr1v1_00203", "SCA-6_Chr1v1_01347", "SCA-6_Chr1v1_01039", 
-  "SCA-6_Chr1v1_00663", "SCA-6_Chr1v1_01567", "SCA-6_Chr1v1_00001", "SCA-6_Chr1v1_01124", "SCA-6_Chr1v1_01029", 
-  "SCA-6_Chr1v1_01120", "SCA-6_Chr1v1_00114", "SCA-6_Chr1v1_00127", "SCA-6_Chr1v1_00226", "SCA-6_Chr1v1_00968", 
-  "SCA-6_Chr1v1_00677", "SCA-6_Chr1v1_00444", "SCA-6_Chr1v1_01625", "SCA-6_Chr1v1_00966", "SCA-6_Chr1v1_00221", 
-  "SCA-6_Chr1v1_00239", "SCA-6_Chr1v1_01149", "SCA-6_Chr1v1_00879", "SCA-6_Chr1v1_00110", "SCA-6_Chr1v1_00869", 
-  "SCA-6_Chr1v1_00489", "SCA-6_Chr1v1_00422", "SCA-6_Chr1v1_01409", "SCA-6_Chr1v1_00651", "SCA-6_Chr1v1_00067", 
-  "SCA-6_Chr1v1_00186", "SCA-6_Chr1v1_00367", "SCA-6_Chr1v1_00603", "SCA-6_Chr1v1_00024", "SCA-6_Chr1v1_00269", 
-  "SCA-6_Chr1v1_01023", "SCA-6_Chr1v1_01437", "SCA-6_Chr1v1_00697", "SCA-6_Chr1v1_00179", "SCA-6_Chr1v1_01155", 
-  "SCA-6_Chr1v1_00802", "SCA-6_Chr1v1_00158", "SCA-6_Chr1v1_00655", "SCA-6_Chr1v1_00046", "SCA-6_Chr1v1_01285", 
-  "SCA-6_Chr1v1_00185", "SCA-6_Chr1v1_00759", "SCA-6_Chr1v1_00594", "SCA-6_Chr1v1_00393", "SCA-6_Chr1v1_00331", 
-  "SCA-6_Chr1v1_00664", "SCA-6_Chr1v1_00113", "SCA-6_Chr1v1_01245", "SCA-6_Chr1v1_01397", "SCA-6_Chr1v1_01042", 
-  "SCA-6_Chr1v1_00318", "SCA-6_Chr1v1_01582", "SCA-6_Chr1v1_00716", "SCA-6_Chr1v1_00707", "SCA-6_Chr1v1_00270", 
-  "SCA-6_Chr1v1_00362", "SCA-6_Chr1v1_00755", "SCA-6_Chr1v1_01246", "SCA-6_Chr1v1_01552", "SCA-6_Chr1v1_01114", 
-  "SCA-6_Chr1v1_01341", "SCA-6_Chr1v1_01147", "SCA-6_Chr1v1_00926", "SCA-6_Chr1v1_01171", "SCA-6_Chr1v1_01602", 
-  "SCA-6_Chr1v1_00580", "SCA-6_Chr1v1_00495", "SCA-6_Chr1v1_01273", "SCA-6_Chr1v1_00322", "SCA-6_Chr1v1_01307", 
-  "SCA-6_Chr1v1_01591", "SCA-6_Chr1v1_00299", "SCA-6_Chr1v1_01427", "SCA-6_Chr1v1_01615", "SCA-6_Chr1v1_01527", 
-  "SCA-6_Chr1v1_00294", "SCA-6_Chr1v1_01332", "SCA-6_Chr1v1_01361", "SCA-6_Chr1v1_00295", "SCA-6_Chr1v1_01084", 
-  "SCA-6_Chr1v1_00930", "SCA-6_Chr1v1_01151", "SCA-6_Chr1v1_00403", "SCA-6_Chr1v1_00951", "SCA-6_Chr1v1_01298", 
-  "SCA-6_Chr1v1_00172", "SCA-6_Chr1v1_00810", "SCA-6_Chr1v1_01168", "SCA-6_Chr1v1_00234", "SCA-6_Chr1v1_01345", 
-  "SCA-6_Chr1v1_00257", "SCA-6_Chr1v1_00656", "SCA-6_Chr1v1_00521", "SCA-6_Chr1v1_01618", "SCA-6_Chr1v1_00790"
-)
-
-
-
-# Extract top terms — even if not significant
-top_terms <- go_results_down@result |>
-  arrange(desc(Count)) |>
-  slice_head(n = 10)
-
-# Plot fallback
-ggplot(top_terms, aes(x = reorder(Description, Count), y = Count)) +
-  geom_col(fill = "skyblue") +
-  coord_flip() +
-  theme_minimal() +
-  labs(
-    title = "Top GO Terms in Downregulated DEGs",
-    x = "GO Term Description",
-    y = "Gene Count"
-  )
-
-
-#rerun deseq july 25
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("DESeq2")
-
-library(DESeq2)
-# Set your working directory
-setwd("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/")
-
-
-
-# Load required libraries
-library(DESeq2)
-library(ggplot2)
-library(pheatmap)
-library(EnhancedVolcano)
-
-# Set working directory
-setwd("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/")
-
-# Load necessary libraries
-library(DESeq2)
-library(pheatmap)
-library(ggplot2)
-library(RColorBrewer)
-library(EnhancedVolcano)
-
-# Read the count data
-
-countdata <- read.csv("deseq_ready_counts.csv", row.names=1, check.names=FALSE)
-# The column names in countdata must match the sample IDs below, in order
-
-
-# Create sample information
-sample_names <- colnames(count_data)
-condition <- ifelse(grepl("OTA", sample_names), "OTA", "PTA")
-col_data <- data.frame(row.names = sample_names, condition = factor(condition))
-
-# Create DESeq2 dataset
-dds <- DESeqDataSetFromMatrix(countData = count_data, colData = col_data, design = ~ condition)
-
-# Pre-filtering to remove low count genes
-dds <- dds[rowSums(counts(dds)) > 1, ]
-
-# Run DESeq2
-dds <- DESeq(dds)
-
-# Get results
-res <- results(dds)
-resOrdered <- res[order(res$padj), ]
-
-# Save results
-write.csv(as.data.frame(resOrdered), file = "DESeq2_results.csv")
-
-# PCA plot
-vsd <- vst(dds, blind = FALSE)
-pcaData <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-
-ggplot(pcaData, aes(PC1, PC2, color = condition)) +
-  geom_point(size = 3) +
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
-  ggtitle("PCA Plot") +
-  theme_minimal()
-
-
-# Heatmap of top 40 DEGs
-top_genes <- head(order(res$padj), 40)
-pheatmap(assay(vsd)[top_genes, ],
-         cluster_rows = TRUE,
-         show_rownames = TRUE,
-         cluster_cols = TRUE,
-         annotation_col = col_data,
-         main = "Top 40 Differentially Expressed Genes")
-
-
-# Volcano plot
-EnhancedVolcano(res,
-                lab = rownames(res),
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                pCutoff = 0.05,
-                FCcutoff = 1.0,
-                title = 'Volcano Plot',
-                subtitle = 'OTA vs PTA',
-                caption = 'DESeq2 Analysis',
-                legendPosition = 'right',
-                legendLabSize = 12,
-                legendIconSize = 4.0)
-# Create a custom color scheme for up/downregulated genes
-keyvals <- ifelse(res$log2FoldChange < -1 & res$pvalue < 0.05, 'blue',
-                  ifelse(res$log2FoldChange > 1 & res$pvalue < 0.05, 'red', 'grey'))
-names(keyvals)[keyvals == 'red'] <- 'Upregulated'
-names(keyvals)[keyvals == 'blue'] <- 'Downregulated'
-names(keyvals)[keyvals == 'grey'] <- 'Not Significant'
-
-# Volcano plot with smaller labels and custom colors
-EnhancedVolcano(res,
-                lab = rownames(res),
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                pCutoff = 0.05,
-                FCcutoff = 1.0,
-                title = 'Volcano Plot',
-                subtitle = 'OTA vs PTA',
-                caption = 'DESeq2 Analysis',
-                legendPosition = 'right',
-                legendLabSize = 12,
-                legendIconSize = 4.0,
-                labSize = 2.5,  # smaller font size for gene labels
-                colCustom = keyvals
-)
-
-# Load necessary library
-library(readr)
-library(dplyr)
-
-
-# Read the cleaned DESeq2 results file
-df <- read.csv("DESeq2_results.csv")
-
-# Filter and count genes based on thresholds
-n_padj_05 <- df %>% filter(padj < 0.05) %>% nrow()
-n_padj_10 <- df %>% filter(padj < 0.1) %>% nrow()
-n_padj_05_lfc_15 <- df %>% filter(padj < 0.05, abs(log2FoldChange) > 1.5) %>% nrow()
-n_padj_10_lfc_15 <- df %>% filter(padj < 0.1, abs(log2FoldChange) > 1.5) %>% nrow()
-
-# Print results
-cat("Number of genes with padj < 0.05:", n_padj_05, "\n")
-cat("Number of genes with padj < 0.1:", n_padj_10, "\n")
-cat("Number of genes with padj < 0.05 and abs(log2FoldChange) > 1.5:", n_padj_05_lfc_15, "\n")
-cat("Number of genes with padj < 0.1 and abs(log2FoldChange) > 1.5:", n_padj_10_lfc_15, "\n")
-
-#rerun July 28 part 2 from original file
-
-# Load libraries
-library(DESeq2)
-library(ggplot2)
-library(pheatmap)
-library(RColorBrewer)
-library(EnhancedVolcano)
-
-countdata <- read.csv("deseq_ready_counts.csv", row.names=1, check.names=FALSE)
-# The column names in countdata must match the sample IDs below, in order
-sample_ids <- c(
-  "MA-OTA-Sca6-S1 001", "MA-OTA-Sca6-S1 002", "MA-OTA-Sca6-S1 003",
-  "MA-OTA-Sca6-S2 001", "MA-OTA-Sca6-S2 002", "MA-OTA-Sca6-S2 003",
-  "MA-OTA-Sca6-S3 001", "MA-OTA-Sca6-S3 002", "MA-OTA-Sca6-S3 003",
-  "MA-OTA-Sca6-S4 001", "MA-OTA-Sca6-S4 002", "MA-OTA-Sca6-S4 003",
-  "MA-PTA-Sca6-S1 001", "MA-PTA-Sca6-S1 002", "MA-PTA-Sca6-S1 003",
-  "MA-PTA-Sca6-S2 001", "MA-PTA-Sca6-S2 002", "MA-PTA-Sca6-S2 003",
-  "MA-PTA-Sca6-S3 001", "MA-PTA-Sca6-S3 002", "MA-PTA-Sca6-S3 003",
-  "MA-PTA-Sca6-S4 001", "MA-PTA-Sca6-S4 002", "MA-PTA-Sca6-S4 003"
-)
-sample_ids <- colnames(countdata)
-Group <- rep(LETTERS[1:8], each=3)
-Type <- rep(c(rep("Ortho", 12), rep("Plagio", 12)))
-Stage <- rep(rep(1:4, each=3), 2)
-
-coldata <- data.frame(
-  Group = Group,
-  Type = Type,
-  Stage = Stage,
-  row.names = sample_ids  # set rownames explicitly to match your count columns
-)
-
-
-all(colnames(countdata) == rownames(coldata))  # Should return TRUE
-
-
-
-
-
-
-dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~Type)
-dds <- DESeq(dds)
-res <- results(dds, contrast=c("Type", "Plagio", "Ortho"))
-resOrdered <- res[order(res$pvalue), ]
-write.csv(as.data.frame(resOrdered), file="DEG_results.csv")
-
-vsd <- vst(dds, blind=FALSE)
-pcaData <- plotPCA(vsd, intgroup="Type", returnData=TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-ggplot(pcaData, aes(PC1, PC2, color=Type)) +
-  geom_point(size=3) +
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
-  theme_minimal()
-
-topGenes <- head(order(res$padj), 50)
-mat <- assay(vsd)[topGenes, ]
-mat <- mat - rowMeans(mat)
-pheatmap(mat, annotation_col=coldata)
-
-EnhancedVolcano(res,
-                lab = rownames(res),
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                pCutoff = 0.05,
-                FCcutoff = 1,
-                pointSize = 3.0,
-                labSize = 3.0)
-# to parse
-res <- results(dds, contrast = c("Type", "Plagio", "Ortho"))
-# Remove NA padj values and filter for significant ones
-sig_res <- res[!is.na(res$padj) & res$padj < 0.05, ]
-write.csv(as.data.frame(sig_res), file = "significant_genes_padj_0.05.csv")
-
-# Example: reading a TSV file named "counts.tsv" in your working directory
-countdata_tsv <- read.delim("Theobroma_cacao_SCA-6_chr.v1.0.Meristem_Atlas.fractional.counts.tsv", row.names=1, check.names=FALSE)
-
-# Use your actual colnames from the count matrix as sample IDs
-sample_ids <- colnames(countdata_tsv)
-
-# Assign groups (A to H, 3 replicates each)
-Group <- rep(LETTERS[1:8], each=3)
-
-# Assign Type based on group: A-D = Ortho, E-H = Plagio
-Type <- ifelse(Group %in% c("A", "B", "C", "D"), "Ortho", "Plagio")
-
-# Assign Stage 1 to 4 in triplicates for each group
-Stage <- rep(rep(1:4, each=3), 2)  # Because you have 8 groups total (4 stages x 2 types)
-
-# Create metadata dataframe with rownames as sample IDs
-coldata <- data.frame(
-  Group = Group,
-  Type = factor(Type),   # factor is recommended for DESeq2
-  Stage = factor(Stage),
-  row.names = sample_ids
-)
-all(rownames(coldata) == colnames(countdata_tsv))  # Should return TRUE
-countdata_int <- round(countdata_tsv)
-
-# Check if all values are non-negative integers
-if(all(countdata_int >= 0) && all(countdata_int == floor(countdata_int))) {
-  dds <- DESeqDataSetFromMatrix(countData = countdata_int,
-                                colData = coldata,
-                                design = ~ Type)
-} else {
-  stop("Count data contains negative or non-integer values even after rounding")
-}
-
-dds <- DESeqDataSetFromMatrix(countData = countdata_int,
-                              colData = coldata,
-                              design = ~ Type)
-dds <- DESeq(dds)
-res <- results(dds, contrast=c("Type", "Plagio", "Ortho"))
-write.csv(as.data.frame(res), file = "DESeq2_results_Plagio_vs_Ortho.csv")
-
-# Filter for genes with padj < 0.05 and remove NA padj values
-sig_genes <- res[!is.na(res$padj) & res$padj < 0.05, ]
-
-# Convert to data frame for saving
-sig_genes_df <- as.data.frame(sig_genes)
-head(sig_genes_df[order(sig_genes_df$padj), ])
-
-
-# Write filtered results to CSV
-write.csv(sig_genes_df, file = "DESeq2_significant_genes_padj_0.05.csv", row.names = TRUE)
-
-#to compare with apical bud file
-
-if (!requireNamespace("readxl", quietly = TRUE)) {
-  install.packages("readxl")
-}
-library(readxl)
-
-library(readxl)
-
-# Read the "Results" sheet (sheet 3) from your Excel file
-original_res <- read_excel("PhaseChange_ApicalBudDESeq.xlsx", sheet = "Results")
-
-# Inspect the first few rows and column names to confirm structure
-head(original_res)
-colnames(original_res)
-library(readxl)
-
-# 1. Read the 'Results' sheet again (already done)
-original_res <- read_excel("PhaseChange_ApicalBudDESeq.xlsx", sheet = "Results")
-
-# 2. Convert to data.frame and check the first few rows
-original_res <- as.data.frame(original_res)
-head(original_res)
-
-# 3. Rename the gene ID column from ...1 to "GeneID"
-colnames(original_res)[1] <- "GeneID"
-
-# 4. Set row names as GeneID and optionally remove the GeneID column
-rownames(original_res) <- original_res$GeneID
-original_res$GeneID <- NULL
-
-# 5. Examine column names again to select columns related to DESeq2 results only
-# For your comparison, focus on these columns only:
-columns_of_interest <- c("baseMean", "log2FoldChange", "lfcSE", "stat", "pvalue", "padj")
-
-# 6. Subset original_res to only these columns for cleaner comparison
-original_res_sub <- original_res[, columns_of_interest]
-
-# 7. Prepare your DESeq2 results similarly if not done already
-my_res_df <- as.data.frame(res)  # 'res' is your DESeq2 results object
-
-# 8. Identify common genes between your results and original
-common_genes <- intersect(rownames(my_res_df), rownames(original_res_sub))
-
-# 9. Subset both datasets by common genes
-my_res_sub <- my_res_df[common_genes, ]
-original_res_sub <- original_res_sub[common_genes, ]
-
-# 10. Rename columns for clarity
-colnames(my_res_sub) <- paste0("My_", colnames(my_res_sub))
-colnames(original_res_sub) <- paste0("Orig_", colnames(original_res_sub))
-
-# 11. Combine side-by-side
-comparison_df <- cbind(my_res_sub, original_res_sub)
-
-# 12. Calculate differences for key numerical columns to highlight discrepancies
-comparison_df$log2FC_diff <- comparison_df$My_log2FoldChange - comparison_df$Orig_log2FoldChange
-comparison_df$padj_diff <- comparison_df$My_padj - comparison_df$Orig_padj
-
-# View genes with largest discrepancies in log2 fold change
-head(comparison_df[order(abs(comparison_df$log2FC_diff), decreasing = TRUE), ])
-
-# 13. Optionally save comparison to CSV for detailed review
-write.csv(comparison_df, file = "DESeq2_vs_Original_Results_Comparison.csv", row.names = TRUE)
-
-#rerun
-dds <- DESeqDataSetFromMatrix(countData = countdata_int,
-                              colData = coldata,
-                              design = ~ Stage + Type)
-
-dds <- DESeq(dds)
-res <- results(dds, contrast = c("Type", "Plagio", "Ortho"))
-write.csv(as.data.frame(res), file = "DESeq2_results_Plagio_vs_Ortho_2.csv")
-library(DESeq2)
-library(ggplot2)
-
-# Transformation (choose vst or rlog, vst is faster)
-vsd <- vst(dds, blind=FALSE)
-
-# Extract PCA data for plotting
-pcaData <- plotPCA(vsd, intgroup="Type", returnData=TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-
-# Plot with ggplot2
-ggplot(pcaData, aes(PC1, PC2, color=Type)) + 
-  geom_point(size=3) + 
-  xlab(paste0("PC1: ", percentVar[1], "% variance")) + 
-  ylab(paste0("PC2: ", percentVar[2], "% variance")) + 
-  theme_minimal()
-library(pheatmap)
-
-# Choose top 50 genes by smallest padj
-topGenes <- head(order(res$padj), 50)
-
-# Get variance stabilized counts for those genes
-mat <- assay(vsd)[topGenes, ]
-
-# Center by row (gene)
-mat <- mat - rowMeans(mat)
-
-# Annotation for samples (use colData from dds)
-annotation_col <- as.data.frame(colData(dds)[, c("Type", "Stage")])
-
-# Plot heatmap
-pheatmap(mat, annotation_col = annotation_col)
-
-
-
-# Append regulation status factor column to the res object (your DESeq2 result data frame)
-threshold_log2FC <- 1
-threshold_padj <- 0.05
-
-res$regulation_status <- "Not Significant"
-res$regulation_status[res$log2FoldChange > threshold_log2FC & res$padj < threshold_padj] <- "Upregulated"
-res$regulation_status[res$log2FoldChange < -threshold_log2FC & res$padj < threshold_padj] <- "Downregulated"
-res$regulation_status <- factor(res$regulation_status, levels = c("Upregulated", "Downregulated", "Not Significant"))
-
-EnhancedVolcano(res,
-                lab = rownames(res),
-                x = 'log2FoldChange',
-                y = 'pvalue',
-                selectLab = rownames(res)[res$regulation_status != "Not Significant"],
-                labSize = 3,
-                pointSize = 2.5,
-                pCutoff = threshold_padj,
-                FCcutoff = threshold_log2FC,
-                colCustom = c('Not Significant' = 'grey30', 'Upregulated' = 'red', 'Downregulated' = 'blue'),
-                legendPosition = 'right',
-                drawConnectors = TRUE,
-                max.overlaps = 30
-)
-
-
-#deseq rerun July 29
-# Set working directory
-setwd("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/")
-
-# Load libraries
-library(DESeq2)
-library(pheatmap)
-library(ggplot2)
-library(EnhancedVolcano)
-
-# Load count data
-counts <- read.csv("deseq_ready_counts.csv", row.names = 1, check.names = FALSE)
-
-# Remove the outlier sample: MA-PTA-Sca6-S2_R1
-counts <- counts[, !grepl("MA-PTA-Sca6-S2_R1", colnames(counts))]
-
-# Create sample metadata (colData)
-sample_names <- colnames(counts)
-condition <- ifelse(grepl("MA-OTA", sample_names), "Ortho", "Plagio")
-stage <- sub(".*Sca6-(S[1-4])_.*", "\\1", sample_names)
-replicate <- sub(".*_R([1-3])", "\\1", sample_names)
-
-colData <- data.frame(
-  row.names = sample_names,
-  condition = factor(condition, levels = c("Ortho", "Plagio")),
-  stage = factor(stage),
-  replicate = factor(replicate)
-)
-
-# Create DESeq2 dataset
-dds <- DESeqDataSetFromMatrix(countData = counts, colData = colData, design = ~ condition)
-
-# Run DESeq2
-dds <- DESeq(dds)
-
-# Get results for Plagio vs Ortho
-res <- results(dds, contrast = c("condition", "Plagio", "Ortho"))
-write.csv(as.data.frame(res), "DEG_Plagio_vs_Ortho_results_july29.csv")
-
-# Filter significant genes
-res_sig_0.2 <- res[which(res$padj < 0.3 & abs(res$log2FoldChange) >= 1), ]
-res_sig_0.2 <- res_sig[order(res_sig$padj), ]
-
-# Save results
-write.csv(as.data.frame(res_sig), "DEG_Plagio_vs_Ortho_0.2cutoff.csv")
-
-res_sig <- res[which(res$padj < 0.1 & abs(res$log2FoldChange) >= 1), ]
-res_sig <- res_sig[order(res_sig$padj), ]
-
-# Save results
-write.csv(as.data.frame(res_sig), "DEG_Plagio_vs_Ortho.csv")
-
-# Heatmap of top 50 DEGs
-vsd <- vst(dds, blind = FALSE)
-top_genes <- head(rownames(res_sig), 50)
-pheatmap(assay(vsd)[top_genes, ], cluster_rows = TRUE, cluster_cols = TRUE,
-         show_rownames = TRUE, annotation_col = colData)
-
-# Volcano plot
-EnhancedVolcano(res,
-                lab = rownames(res),
-                x = 'log2FoldChange',
-                y = 'padj',
-                pCutoff = 0.1,
-                FCcutoff = 1,
-                title = 'Plagiotropic vs Orthotropic Apical Buds',
-                subtitle = 'DESeq2 results',
-                caption = 'padj < 0.1 & |log2FC| ≥ 1')
-
-
-#using the file from mg July 29
-# Set working directory
-setwd("C:/Users/Jigeesha Mukherjee/Desktop/Jigeesha/work 2023/job applications/guiltinan/Biodiversity/patrick rerun/")
-
-# Load required libraries
-library(readxl)
-library(ggplot2)
-library(pheatmap)
-library(RColorBrewer)
-library(EnhancedVolcano)
-library(DESeq2)
-
-# Load DESeq2 results
-deg <- read_excel("DESeq2_results_Plagio_vs_Ortho_20.2 padj cutoff.xlsx")
-colnames(deg)[1] <- "GeneID"
-
-EnhancedVolcano(deg,
-                lab = deg$GeneID,
-                x = 'log2FoldChange',
-                y = 'padj',
-                pCutoff = 0.2,
-                FCcutoff = 1,
-                title = 'Plagiotropic vs Orthotropic Apical Buds',
-                subtitle = 'Significant DEGs (padj < 0.2)',
-                caption = 'No additional filtering applied',
-                pointSize = 3.0,
-                labSize = 3.5)
 
 
